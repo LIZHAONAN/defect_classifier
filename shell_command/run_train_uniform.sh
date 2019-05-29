@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --account=pengyu-lab
 #SBATCH --partition=pengyu-gpu
+#SBATCH --qos=low
 #SBATCH --time=00:10:00
 #SBATCH --job-name=train-uniform
 #SBATCH --mail-user=zli@brandeis.edu

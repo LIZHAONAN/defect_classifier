@@ -110,7 +110,7 @@ for epoch in range(num_epochs):
                                                  num_workers=8, drop_last=True)
     print("trainloader ready!")
 
-    testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/home/rliu/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
+    testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
                                             method = 'yolo',n_samples = 800), window_size = window_size, transforms=test_transform)
     testloader = torch.utils.data.DataLoader(testset,
                                                  batch_size=batch_size, shuffle=True,
@@ -201,6 +201,6 @@ print('Best val Acc: {:4f}'.format(best_acc))
 # load best model weights
 net.load_state_dict(best_model_wts)
 
-output_path = '/home/rliu/defect_classifier/models/python/FNN/2x100_28epo_yolo_01-13-18.model'
+output_path = '/home/zli/defect_reduced/models/python/FNN/2x100_28epo_yolo_05-29-19.model'
 torch.save(net, output_path)
 

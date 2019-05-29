@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --account=pengyu-lab
-#SBATCH --partition=pengyu-gpu
+#SBATCH --account=guest
+#SBATCH --partition=guest-gpu
 #SBATCH --qos=medium
 #SBATCH --time=00:10:00
 #SBATCH --job-name=train-uniform

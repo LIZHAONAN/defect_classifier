@@ -4,8 +4,7 @@
 #SBATCH --time=00:10:00
 #SBATCH --job-name=train-uniform
 #SBATCH --mail-user=zli@brandeis.edu
-#SBATCH --output=output/%j.txt
+#SBATCH --output=shell_command/output/%j.txt
 #SBATCH --node=2
 
-cd ..
 python3 train_uniform.py

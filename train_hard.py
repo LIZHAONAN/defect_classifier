@@ -22,7 +22,7 @@ from torchvision.models.resnet import BasicBlock, conv3x3, Bottleneck
 window_size = 45
 pad_size = window_size
 classes = ["pos","neg","pos_o","nuc","non"]
-output_path = '/home/rliu/defect_classifier/models/python/res34_600epo_hard_01-07-18.model'
+output_path = '/home/zli/defect_reduced/models/python/res34_600epo_hard_05-29-19.model'
 batch_size = 256
 
 data_transform = transforms.Compose([

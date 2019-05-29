@@ -22,7 +22,7 @@ from torchvision.models.resnet import BasicBlock, conv3x3, Bottleneck
 window_size = 45
 pad_size = window_size
 classes = ["pos","neg","pos_o","nuc","non"]
-output_path = '/home/rliu/defect_classifier/models/python/res34_600epo_uniform_01-10-18.model'
+output_path = '/home/zli/defect_reduced/models/python/res34_600epo_uniform_05-29-19.model'
 batch_size = 256
 non_pos_ratio = 4
 
@@ -69,7 +69,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
                                              num_workers=16, drop_last=True)
         print("trainloader ready!")
 
-        testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/home/rliu/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
+        testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
                                                               method = 'uniform',n_samples = 500), window_size = window_size, transforms=data_transform)
         testloader = torch.utils.data.DataLoader(testset,
                                                      batch_size=batch_size, shuffle=True,

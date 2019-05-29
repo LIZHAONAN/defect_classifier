@@ -31,7 +31,7 @@ mask = create_circular_mask(200,200)
 
 
 class defectDataset_csv(Dataset):
-    def __init__(self, csv_path='/home/rliu/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', img_path='/home/rliu/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/JPEGImages/', window_size=50, pad_size=50, mask = create_circular_mask(200,200), transforms=None):
+    def __init__(self, csv_path='/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', img_path='/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/JPEGImages/', window_size=50, pad_size=50, mask = create_circular_mask(200,200), transforms=None):
         """
         Args:
             csv_path (string): path to csv file
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 #         defectDataset('../data/mnist_in_csv.csv', 28, 28, transformations)
 
 class defectDataset_df(Dataset):
-    def __init__(self, df = pd.read_csv('/home/rliu/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" "), img_path='/home/rliu/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/JPEGImages/', window_size=50, pad_size=50, mask = create_circular_mask(200,200), transforms=None):
+    def __init__(self, df = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" "), img_path='/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/JPEGImages/', window_size=50, pad_size=50, mask = create_circular_mask(200,200), transforms=None):
         """
         Args:
             df: dataframes of training data
@@ -146,8 +146,8 @@ def sample_point_circular(circle_min = 0.02, circle_max = 0.07):
     return x,y
 
 def split_and_sample(
-    df_labels = pd.read_csv('/home/rliu/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" "),
-    df_yolo = pd.read_csv('/home/rliu/github/defect_classifier/yolo2_dm/results/train_yolo.csv', sep=' ')
+    df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" "),
+    df_yolo = pd.read_csv('/home/zli/defect_reduced/yolo2_dm/results/train_yolo.csv', sep=' ')
     , n_samples = 1000, non_pos_ratio = 1, non_inner_circle = 0.02, non_outer_circle = 0.07, method = 'uniform'):
     
     df_pos = df_labels[df_labels['class'] == 0]

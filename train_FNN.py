@@ -80,9 +80,9 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 classes = ["pos","neg","pos_o","nuc","non"]
 num_of_classes = len(classes)
 
-model_uniform = torch.load('/home/rliu/defect_classifier/models/python/res34_600epo_uniform_01-07-18.model')
+model_uniform = torch.load('/home/zli/defect_reduced/models/python/res34_600epo_uniform_05-29-19.model')
 model_uniform.eval()
-model_hard = torch.load('/home/rliu/defect_classifier/models/python/res34_600epo_hard_01-07-18.model')
+model_hard = torch.load('/home/zli/defect_reduced/models/python/res34_600epo_hard_05-29-19.model')
 model_hard.eval()
 
 
@@ -201,6 +201,6 @@ print('Best val Acc: {:4f}'.format(best_acc))
 # load best model weights
 net.load_state_dict(best_model_wts)
 
-output_path = '/home/zli/defect_reduced/models/python/FNN/2x100_28epo_yolo_05-29-19.model'
+output_path = '/home/zli/defect_reduced/models/python/FNN/2x100_28epo_yolo_05-30-19.model'
 torch.save(net, output_path)
 

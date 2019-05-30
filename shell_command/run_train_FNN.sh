@@ -9,4 +9,5 @@
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:GTX:1
 
+export CUDA_VISIBLE_DEVICE=0
 python3 train_FNN.py

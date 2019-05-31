@@ -7,7 +7,7 @@
 #SBATCH --mail-user=zli@brandeis.edu
 #SBATCH --output=shell_command/output/%j.txt
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:GTX:1
+#SBATCH --gres=gpu:TitanXP:1
 
 export CUDA_VISIBLE_DEVICE=0
 python3 train_FNN.py

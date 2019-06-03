@@ -90,7 +90,8 @@ if __name__ == "__main__":
 #         defectDataset('../data/mnist_in_csv.csv', 28, 28, transformations)
 
 class defectDataset_df(Dataset):
-    def __init__(self, df = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" "), img_path='/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/JPEGImages/', window_size=50, pad_size=50, mask = create_circular_mask(200,200), transforms=None):
+    def __init__(self, df = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" "), img_path='/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/JPEGImages/',
+                 window_size=50, pad_size=50, mask = create_circular_mask(200,200), transforms=None, old_transform=False):
         """
         Args:
             df: dataframes of training data
@@ -102,6 +103,7 @@ class defectDataset_df(Dataset):
         self.window_size = window_size
         self.pad_size = pad_size
         self.mask = mask
+        self.old_transform = old_transform
 
     def __getitem__(self, index):
         labels = self.data.loc[index]
@@ -119,18 +121,22 @@ class defectDataset_df(Dataset):
         xmax = width * x + self.window_size/2 + self.pad_size
         ymax = height * y + self.window_size/2 + self.pad_size
         img_resized = img.crop((xmin, ymin, xmax, ymax))
-        img_resized = torchvision.transforms.functional.resize(img_resized, (200,200), interpolation=2)
-        img_masked = img_resized * mask
-        img_masked = Image.fromarray(img_masked.astype('uint8'), 'L')
-#         img_resized = img_resized * mask
-#         img_resized = img_resized*mask
-#         if self.mask is not None:
-#             img_resized[~mask] = 0
+
+        if self.old_transform:
+            img_resized = torchvision.transforms.functional.resize(img_resized, (200, 200), interpolation=2)
+            img_masked = img_resized * create_circular_mask(200, 200)
+            img_masked = Image.fromarray(img_masked.astype('uint8'), 'L')
+            if self.transforms is not None:
+                img_masked = self.transforms(img_masked)
+                return (img_masked, single_image_label)
+
+        img_resized = torchvision.transforms.functional.resize(img_resized, (300,300), interpolation=2)
+
         # Transform image to tensor
         if self.transforms is not None:
-            img_masked = self.transforms(img_masked)
+            img_resized = self.transforms(img_resized)
         # Return image and the label
-        return (img_masked, single_image_label)
+        return (img_resized, single_image_label)
 
     def __len__(self):
         return len(self.data.index)

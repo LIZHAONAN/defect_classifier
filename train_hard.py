@@ -25,16 +25,16 @@ classes = ["pos","neg","pos_o","nuc","non"]
 output_path = '/home/zli/defect_reduced/models/python/res34_600epo_hard_05-29-19.model'
 batch_size = 256
 
-# old_data_transform = transforms.Compose([
-#         transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),
-#         transforms.RandomRotation((-90,90)),
-#         torchvision.transforms.RandomVerticalFlip(p=0.5),
-#         torchvision.transforms.RandomHorizontalFlip(p=0.5),
-# #         torchvision.transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0, hue=0),
-#         transforms.ToTensor(),
-#         transforms.Normalize(mean=[0.3019],
-#                              std=[0.1909])
-#     ])
+old_data_transform = transforms.Compose([
+        transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),
+        transforms.RandomRotation((-90,90)),
+        torchvision.transforms.RandomVerticalFlip(p=0.5),
+        torchvision.transforms.RandomHorizontalFlip(p=0.5),
+#         torchvision.transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0, hue=0),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.3019],
+                             std=[0.1909])
+    ])
 
 data_transform = transforms.Compose([
         transforms.RandomPerspective(distortion_scale=0.3, p=0.5, interpolation=3),
@@ -48,7 +48,6 @@ data_transform = transforms.Compose([
         transforms.Normalize(mean=[0.3019],
                              std=[0.1909])
     ])
-
 
 use_gpu = torch.cuda.is_available()
 if use_gpu:
@@ -82,7 +81,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
         print("trainloader ready!")
 
         testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
-                                                              method = 'hard',n_samples = 500), window_size = window_size, transforms=data_transform)
+                                                              method = 'hard',n_samples = 500), window_size = window_size, transforms=old_data_transform, )
         testloader = torch.utils.data.DataLoader(testset,
                                                      batch_size=batch_size, shuffle=True,
                                                      num_workers=8)

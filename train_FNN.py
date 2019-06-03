@@ -21,11 +21,11 @@ from torch.optim import lr_scheduler
 input_size = 10       # The image size = 28 x 28 = 784
 hidden_size = 100      # The number of nodes at the hidden layer
 num_classes = 5       # The number of output classes. In this case, from 0 to 9
-num_epochs = 50         # The number of times entire dataset is trained
+num_epochs = 40         # The number of times entire dataset is trained
 batch_size = 256       # The size of input data took for one iteration
 learning_rate = 0.005  # The speed of convergence
 non_pos_ratio = 10
-weight_decay=5e-4
+weight_decay = 5e-4
 
 train_transform = transforms.Compose([
         transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),

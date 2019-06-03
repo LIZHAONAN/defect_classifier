@@ -6,7 +6,7 @@ import PIL
 import torch, torchvision
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
-from dataset import defectDataset_df, create_circular_mask, split_and_sample
+from dataset import defectDataset_df, create_circular_mask, split_and_sample, add_circular_mask
 import random
 import math
 import torch.nn as nn
@@ -25,12 +25,25 @@ classes = ["pos","neg","pos_o","nuc","non"]
 output_path = '/home/zli/defect_reduced/models/python/res34_600epo_hard_05-29-19.model'
 batch_size = 256
 
+# old_data_transform = transforms.Compose([
+#         transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),
+#         transforms.RandomRotation((-90,90)),
+#         torchvision.transforms.RandomVerticalFlip(p=0.5),
+#         torchvision.transforms.RandomHorizontalFlip(p=0.5),
+# #         torchvision.transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0, hue=0),
+#         transforms.ToTensor(),
+#         transforms.Normalize(mean=[0.3019],
+#                              std=[0.1909])
+#     ])
+
 data_transform = transforms.Compose([
-        transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),
+        transforms.RandomPerspective(distortion_scale=0.3, p=0.5, interpolation=3),
         transforms.RandomRotation((-90,90)),
         torchvision.transforms.RandomVerticalFlip(p=0.5),
         torchvision.transforms.RandomHorizontalFlip(p=0.5),
-#         torchvision.transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0, hue=0),
+        transforms.RandomResizedCrop(200, scale=(0.8, 1), ratio=(1, 1)),
+        # apply circular mask
+        transforms.Lambda(lambda x: add_circular_mask(x)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.3019],
                              std=[0.1909])

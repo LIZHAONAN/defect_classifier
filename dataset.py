@@ -27,6 +27,13 @@ def create_circular_mask(h, w, center=None, radius=None):
     mask = mask.astype(int)
     return mask
 
+def add_circular_mask(image):
+    w, h = image.size[0], image.size[1]
+    mask = create_circular_mask(w, h)
+    img_masked = image * mask
+    img_masked = Image.fromarray(img_masked.astype('uint8'), 'L')
+    return img_masked
+
 mask = create_circular_mask(200,200)
 
 

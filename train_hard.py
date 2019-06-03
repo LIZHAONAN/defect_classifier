@@ -81,7 +81,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
         print("trainloader ready!")
 
         testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
-                                                              method = 'hard',n_samples = 500), window_size = window_size, transforms=old_data_transform, )
+                                                              method = 'hard',n_samples = 500), window_size = window_size, transforms=old_data_transform, old_transform=True)
         testloader = torch.utils.data.DataLoader(testset,
                                                      batch_size=batch_size, shuffle=True,
                                                      num_workers=8)

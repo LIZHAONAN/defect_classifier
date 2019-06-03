@@ -6,7 +6,7 @@ import PIL
 import torch, torchvision
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
-from dataset import defectDataset_df, create_circular_mask, split_and_sample
+from dataset import defectDataset_df, add_circular_mask, split_and_sample
 import random
 import math
 import torch.nn as nn
@@ -26,12 +26,25 @@ output_path = '/home/zli/defect_reduced/models/python/res34_600epo_uniform_05-29
 batch_size = 256
 non_pos_ratio = 4
 
-data_transform = transforms.Compose([
+old_data_transform = transforms.Compose([
         transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),
         transforms.RandomRotation((-90,90)),
         torchvision.transforms.RandomVerticalFlip(p=0.5),
         torchvision.transforms.RandomHorizontalFlip(p=0.5),
 #         torchvision.transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0, hue=0),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.3019],
+                             std=[0.1909])
+    ])
+
+data_transform = transforms.Compose([
+        transforms.RandomPerspective(distortion_scale=0.3, p=0.5, interpolation=3),
+        transforms.RandomRotation((-90,90)),
+        torchvision.transforms.RandomVerticalFlip(p=0.5),
+        torchvision.transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomResizedCrop(200, scale=(0.8, 1), ratio=(1, 1)),
+        # apply circular mask
+        transforms.Lambda(lambda x: add_circular_mask(x)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.3019],
                              std=[0.1909])
@@ -70,7 +83,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
         print("trainloader ready!")
 
         testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
-                                                              method = 'uniform',n_samples = 500), window_size = window_size, transforms=data_transform)
+                                                              method = 'uniform',n_samples = 500), window_size = window_size, transforms=old_data_transform, old_transform=True)
         testloader = torch.utils.data.DataLoader(testset,
                                                      batch_size=batch_size, shuffle=True,
                                                      num_workers=16)

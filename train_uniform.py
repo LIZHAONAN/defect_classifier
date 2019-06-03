@@ -22,7 +22,7 @@ from torchvision.models.resnet import BasicBlock, conv3x3, Bottleneck
 window_size = 45
 pad_size = window_size
 classes = ["pos","neg","pos_o","nuc","non"]
-output_path = '/home/zli/defect_reduced/models/python/res34_600epo_uniform_05-29-19.model'
+output_path = '/home/zli/defect_reduced/models/python/res34_600epo_uniform_06-03-19-new_transform.model'
 batch_size = 256
 non_pos_ratio = 4
 

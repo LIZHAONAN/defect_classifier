@@ -25,9 +25,13 @@ step_size = 2
 window_size = 45
 batch_size = 512
 num_workers = 8
-output_path = '/home/rliu/defect_classifier/convolution_train/'
-df_yolo = pd.read_csv('/home/rliu/github/defect_classifier/yolo2_dm/results/train_yolo.csv', sep=' ')
-df_train = pd.read_csv('/home/rliu/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" ")
+output_path = '/home/zli/defect_classifier/convolution_train/'
+df_yolo = pd.read_csv('/work/zli/yolo2_dm/results/train_yolo.csv', sep=' ')
+df_train = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" ")
+
+path_to_uniform_model = '/home/zli/defect_reduced/models/python/ml/res34_600epo_uniform_01-07-18.model'
+path_to_hard_model = '/home/zli/defect_classifier/models/python/ml/res34_600epo_hard_01-07-18.model'
+path_to_FNN_model = '/home/zli/defect_classifier/models/python/ml/2x100_28epo_yolo_01-13-18.model'
 
 data_transform = transforms.Compose([
         transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),
@@ -52,18 +56,20 @@ class Net(nn.Module):
 #         out = self.fc3(out)
         return out
 
-classes = ["pos","neg","pos_o","nuc","non"]
-num_of_classes = len(classes)
-model_uniform = torch.load('/home/rliu/defect_classifier/models/python/ml/res34_600epo_uniform_01-07-18.model')
-model_uniform.eval()
-model_hard = torch.load('/home/rliu/defect_classifier/models/python/ml/res34_600epo_hard_01-07-18.model')
-model_hard.eval()
-model_FNN = torch.load('/home/rliu/defect_classifier/models/python/ml/2x100_28epo_yolo_01-13-18.model')
-model_FNN.eval()
 use_gpu = torch.cuda.is_available()
 if use_gpu:
     print("GPU in use")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+classes = ["pos","neg","pos_o","nuc","non"]
+num_of_classes = len(classes)
+model_uniform = torch.load(path_to_uniform_model, map_location=device)
+model_uniform.eval()
+model_hard = torch.load(path_to_hard_model, map_location=device)
+model_hard.eval()
+model_FNN = torch.load(path_to_FNN_model, map_location=device)
+model_FNN.eval()
+
 if use_gpu:
     model_uniform.cuda()
     model_uniform = torch.nn.DataParallel(model_uniform, device_ids=[0])
@@ -71,6 +77,7 @@ if use_gpu:
     model_hard = torch.nn.DataParallel(model_hard, device_ids=[0])
     model_FNN.cuda()
     model_FNN = torch.nn.DataParallel(model_FNN, device_ids=[0])
+
 model_uniform.train(False)
 model_hard.train(False)
 model_FNN.train(False)

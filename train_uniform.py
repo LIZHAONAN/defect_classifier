@@ -78,7 +78,8 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
         running_loss = 0.0
         running_corrects = 0
 
-        trainset = defectDataset_df(df = split_and_sample(method = 'uniform',n_samples = 1995, non_pos_ratio = non_pos_ratio), window_size = window_size, transforms=data_transform,
+        trainset = defectDataset_df(df = split_and_sample(df_labels=pd.read_csv('/work/zli/new_data/new_train.csv'),
+                                    method = 'uniform',n_samples = 1995, non_pos_ratio = non_pos_ratio), window_size = window_size, transforms=data_transform,
                                     img_path='/work/zli/new_data/images/')
         trainloader = torch.utils.data.DataLoader(trainset,
                                              batch_size=batch_size, shuffle=True,

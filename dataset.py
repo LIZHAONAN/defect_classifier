@@ -170,7 +170,7 @@ def sample_point_circular(circle_min = 0.02, circle_max = 0.07):
     return x,y
 
 def split_and_sample(
-    df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/train.csv', sep=" "),
+    df_labels = pd.read_csv('/work/zli/new_data/new_train.csv'),
     df_yolo = pd.read_csv('/work/zli/yolo2_dm/results/train_yolo.csv', sep=' ')
     , n_samples = 1000, non_pos_ratio = 1, non_inner_circle = 0.02, non_outer_circle = 0.07, method = 'uniform'):
     

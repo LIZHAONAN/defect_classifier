@@ -7,6 +7,6 @@
 #SBATCH --mail-user=zli@brandeis.edu
 #SBATCH --output=shell_command/output/%j.txt
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:TitanXP:3
+#SBATCH --gres=gpu:TitanXP:5
 
 python3 train_hard.py

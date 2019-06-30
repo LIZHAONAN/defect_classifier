@@ -209,7 +209,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=100, gamma=0.5)
 
 # train model
 model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
-                       num_epochs=600)
+                       num_epochs=700)
 torch.save(model_ft, output_path)
 
 

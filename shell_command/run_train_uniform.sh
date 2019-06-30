@@ -7,6 +7,6 @@
 #SBATCH --mail-user=zli@brandeis.edu
 #SBATCH --output=shell_command/output/%j.txt
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:GTX:2
+#SBATCH --gres=gpu:GTX:3
 
 python3 train_uniform.py

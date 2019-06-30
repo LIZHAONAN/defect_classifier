@@ -22,7 +22,7 @@ from torchvision.models.resnet import BasicBlock, conv3x3, Bottleneck
 window_size = 45
 pad_size = window_size
 classes = ["pos","neg","pos_o","nuc","non"]
-output_path = '/home/zli/defect_reduced/models/python/res34_600epo_hard_06-03-19-new_transform.model'
+output_path = '/home/zli/defect_reduced/models/python/res34_600epo_hard_06-30-19-new_transform_new_train.model'
 batch_size = 256
 
 old_data_transform = transforms.Compose([
@@ -38,10 +38,12 @@ old_data_transform = transforms.Compose([
 
 data_transform = transforms.Compose([
         transforms.RandomPerspective(distortion_scale=0.3, p=0.5, interpolation=3),
-        transforms.RandomRotation((-90,90)),
+        transforms.RandomRotation((-90, 90)),
         torchvision.transforms.RandomVerticalFlip(p=0.5),
         torchvision.transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomResizedCrop(200, scale=(0.8, 1), ratio=(1, 1)),
+        transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0),
+        transforms.RandomAffine(20, shear=20, resample=False, fillcolor=0),
         # apply circular mask
         transforms.Lambda(lambda x: add_circular_mask(x)),
         transforms.ToTensor(),
@@ -74,14 +76,16 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
         running_loss = 0.0
         running_corrects = 0
 
-        trainset = defectDataset_df(df = split_and_sample(method = 'hard',n_samples = 1995), window_size = window_size, transforms=data_transform)
+        trainset = defectDataset_df(df = split_and_sample(df_labels=pd.read_csv('/work/zli/new_data/new_train.csv'), method = 'hard',n_samples = 1995),
+                                    window_size = window_size, transforms=data_transform, img_path='/work/zli/new_data/images/')
         trainloader = torch.utils.data.DataLoader(trainset,
                                              batch_size=batch_size, shuffle=True,
                                              num_workers=8, drop_last=True)
         print("trainloader ready!")
 
-        testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
-                                                              method = 'hard',n_samples = 500), window_size = window_size, transforms=old_data_transform, old_transform=True)
+        testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/new_data/new_test.csv'),
+                                                              method = 'hard',n_samples = 500), window_size = window_size, transforms=old_data_transform, old_transform=True,
+                                   img_path='/work/zli/new_data/images/')
         testloader = torch.utils.data.DataLoader(testset,
                                                      batch_size=batch_size, shuffle=True,
                                                      num_workers=8)

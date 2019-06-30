@@ -115,12 +115,23 @@ class defectDataset_df(Dataset):
         img = img.convert('L')
         img = torchvision.transforms.functional.resize(img, (300,300), interpolation=2)
         width, height = img.size
-        img = ImageOps.expand(img, border=self.pad_size, fill=0)
-        xmin = width * x - self.window_size/2 + self.pad_size
-        ymin = height * y - self.window_size/2 + self.pad_size
-        xmax = width * x + self.window_size/2 + self.pad_size
-        ymax = height * y + self.window_size/2 + self.pad_size
-        img_resized = img.crop((xmin, ymin, xmax, ymax))
+        # reduce window size to 20 if the image is unconfined:
+        if index >= 11000:
+            window_size = 30
+            pad_size = 30
+            img = ImageOps.expand(img, border=pad_size, fill=0)
+            xmin = width * x - window_size / 2 + pad_size
+            ymin = height * y - window_size / 2 + pad_size
+            xmax = width * x + window_size / 2 + pad_size
+            ymax = height * y + window_size / 2 + pad_size
+            img_resized = img.crop((xmin, ymin, xmax, ymax))
+        else:
+            img = ImageOps.expand(img, border=self.pad_size, fill=0)
+            xmin = width * x - self.window_size/2 + self.pad_size
+            ymin = height * y - self.window_size/2 + self.pad_size
+            xmax = width * x + self.window_size/2 + self.pad_size
+            ymax = height * y + self.window_size/2 + self.pad_size
+            img_resized = img.crop((xmin, ymin, xmax, ymax))
 
         if self.old_transform:
             img_resized = torchvision.transforms.functional.resize(img_resized, (200, 200), interpolation=2)

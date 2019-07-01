@@ -115,7 +115,7 @@ since = time.time()
 best_model_wts = net.state_dict()
 best_acc = 0.0
 for epoch in range(num_epochs):
-    trainset = defectDataset_df(df = split_and_sample(method = 'yolo',n_samples = 1995, non_pos_ratio=non_pos_ratio), window_size = window_size,
+    trainset = defectDataset_df(df = split_and_sample(df_labels=pd.read_csv('/work/zli/new_data/new_train.csv'), method = 'yolo',n_samples = 1995, non_pos_ratio=non_pos_ratio), window_size = window_size,
                                              transforms=train_transform, img_path='/work/zli/new_data/images/')
     trainloader = torch.utils.data.DataLoader(trainset,
                                                  batch_size=batch_size, shuffle=True,

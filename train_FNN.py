@@ -21,7 +21,7 @@ from torch.optim import lr_scheduler
 input_size = 10       # The image size = 28 x 28 = 784
 hidden_size = 100      # The number of nodes at the hidden layer
 num_classes = 5       # The number of output classes. In this case, from 0 to 9
-num_epochs = 60         # The number of times entire dataset is trained
+num_epochs = 50         # The number of times entire dataset is trained
 batch_size = 256       # The size of input data took for one iteration
 learning_rate = 0.005  # The speed of convergence
 non_pos_ratio = 10
@@ -39,11 +39,13 @@ weight_decay = 5e-4
 #                              std=[0.1909])
 #     ])
 train_transform = transforms.Compose([
-        transforms.RandomPerspective(distortion_scale=0.3, p=0.5, interpolation=3),
-        transforms.RandomRotation((-90,90)),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0),
+        transforms.RandomPerspective(distortion_scale=0.2, p=0.5, interpolation=3),
+        transforms.RandomRotation((-90, 90)),
         torchvision.transforms.RandomVerticalFlip(p=0.5),
         torchvision.transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomResizedCrop(200, scale=(0.8, 1), ratio=(1, 1)),
+        transforms.RandomResizedCrop(200, scale=(1, 1), ratio=(1, 1)),
+        transforms.RandomAffine(20, shear=20, resample=False, fillcolor=0),
         # apply circular mask
         transforms.Lambda(lambda x: add_circular_mask(x)),
         transforms.ToTensor(),
@@ -90,9 +92,9 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 classes = ["pos","neg","pos_o","nuc","non"]
 num_of_classes = len(classes)
 
-model_uniform = torch.load('/home/zli/defect_reduced/models/python/res34_600epo_uniform_06-03-19-new_transform.model')
+model_uniform = torch.load('/home/zli/defect_reduced/models/python/res34_600epo_uniform_06-30-19-new_transform-new_train.model')
 model_uniform.eval()
-model_hard = torch.load('/home/zli/defect_reduced/models/python/res34_600epo_hard_06-03-19-new_transform.model')
+model_hard = torch.load('/home/zli/defect_reduced/models/python/res34_600epo_hard_06-30-19-new_transform_new_train.model')
 model_hard.eval()
 
 
@@ -114,14 +116,14 @@ best_model_wts = net.state_dict()
 best_acc = 0.0
 for epoch in range(num_epochs):
     trainset = defectDataset_df(df = split_and_sample(method = 'yolo',n_samples = 1995, non_pos_ratio=non_pos_ratio), window_size = window_size,
-                                             transforms=train_transform)
+                                             transforms=train_transform, img_path='/work/zli/new_data/images/')
     trainloader = torch.utils.data.DataLoader(trainset,
                                                  batch_size=batch_size, shuffle=True,
                                                  num_workers=8, drop_last=True)
     print("trainloader ready!")
 
-    testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/yolo2/v2_pytorch_yolo2/data/an_data/VOCdevkit/VOC2007/csv_labels/test.csv', sep=" "),
-                                            method = 'yolo',n_samples = 800), window_size = window_size, transforms=test_transform, old_transform=True)
+    testset = defectDataset_df(df = split_and_sample(df_labels = pd.read_csv('/work/zli/new_data/new_test.csv'),
+                                            method = 'yolo',n_samples = 800), window_size = window_size, transforms=test_transform, old_transform=True, img_path='/work/zli/new_data/images/')
     testloader = torch.utils.data.DataLoader(testset,
                                                  batch_size=batch_size, shuffle=True,
                                                  num_workers=8)
@@ -211,6 +213,6 @@ print('Best val Acc: {:4f}'.format(best_acc))
 # load best model weights
 net.load_state_dict(best_model_wts)
 
-output_path = '/home/zli/defect_reduced/models/python/FNN/2x100_28epo_yolo_06-03-19-new_transform.model'
+output_path = '/home/zli/defect_reduced/models/python/FNN/2x100_28epo_yolo_06-30-19-new_transform-new_train.model'
 torch.save(net, output_path)
 

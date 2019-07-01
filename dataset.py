@@ -117,8 +117,8 @@ class defectDataset_df(Dataset):
         width, height = img.size
         # reduce window size to 20 if the image is unconfined:
         if index >= 11000:
-            window_size = 30
-            pad_size = 30
+            window_size = 15
+            pad_size = 15
             img = ImageOps.expand(img, border=pad_size, fill=0)
             xmin = width * x - window_size / 2 + pad_size
             ymin = height * y - window_size / 2 + pad_size
